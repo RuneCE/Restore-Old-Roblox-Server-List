@@ -429,9 +429,14 @@
           </div>`;
         item.innerHTML = itemHtml;
 
-        for (let j = 0; j < thumbnails.length; j++)
-          if (thumbnails[j].includes(playerImageUrl))
-            item.style.borderColor = 'rgb(0, 176, 111)';
+        chrome.storage.local.get("hex", (result) => {
+          const storedHex = result.hex || "00b06f";
+          for (let j = 0; j < thumbnails.length; j++) {
+            if (thumbnails[j].includes(playerImageUrl)) {
+              item.style.borderColor = `#${storedHex}`;
+            }
+          }
+        });
 
         first.parentNode.insertBefore(item, first);
 
@@ -542,6 +547,15 @@
         $("#rorsl-username").val(value.username);
       }
     });
+
+    chrome.storage.local.get("hex").then((value) => {
+      if (value.hex == undefined) {
+        chrome.storage.local.set({ hex: "00b06f" });
+        $("#rorsl-hex").val("00b06f");
+      } else {
+        $("#rorsl-hex").val(value.hex);
+      }
+    });
   }
   
   $(function () {
@@ -578,6 +592,16 @@
       $("#rorsl-username").val(username);
       if (username != undefined) {
         chrome.storage.local.set({ username: username });
+      }
+      chrome.runtime.sendMessage("rorsl background refresh settings");
+    });
+
+    $("#rorsl-hex").on("input", function () {
+      var hex = $("#rorsl-hex").val();
+      hex = hex.replace(/[\W ]+/g, "");
+      $("#rorsl-hex").val(hex);
+      if (hex != undefined) {
+        chrome.storage.local.set({ hex: hex });
       }
       chrome.runtime.sendMessage("rorsl background refresh settings");
     });
