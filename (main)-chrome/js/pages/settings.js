@@ -86,6 +86,16 @@ $(function () {
     }
     sendSettingsRefresh();
   });
+
+  $("#hex").on("input", function () {
+    var hex = $("#hex").val();
+    hex = hex.replace(/[\W ]+/g, "");
+    $("#hex").val(hex);
+    if (hex != undefined) {
+      chrome.storage.local.set({ hex: hex });
+    }
+    sendSettingsRefresh();
+  });
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
