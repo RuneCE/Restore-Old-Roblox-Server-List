@@ -38,6 +38,15 @@ function loadSettings() {
       $("#username").val(value.username);
     }
   });
+
+  chrome.storage.local.get("hex").then((value) => {
+    if (value.hex == undefined) {
+      chrome.storage.local.set({ hex: "00b06f" });
+      $("#hex").val("00b06f");
+    } else {
+      $("#hex").val(value.hex);
+    }
+  });
 }
 
 $(function () {
